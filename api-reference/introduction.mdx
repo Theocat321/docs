@@ -1,33 +1,23 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: "Introduction"
+description: "PromptStream API overview and authentication"
 ---
 
 <Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
+    This section introduces the core PromptStream REST API for prompt
+    management, experimentation, and usage tracking.
 </Note>
 
-## Welcome
+## Welcome to the PromptStream API
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+The PromptStream API lets you version prompts, run A/B experiments, track outcomes, and meter usage—all via simple HTTP endpoints.
 
-<Card
-  title="FastAPI Endpoints"
-  icon="rocket"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+We use an **OpenAPI specification** to define every route and model.
 
 ## Authentication
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+All endpoints require your organisation’s API key in an HTTP header:
 
-```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
+```http
+X-API-Key: YOUR_PROMPTSTREAM_API_KEY
 ```
