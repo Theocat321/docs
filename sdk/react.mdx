@@ -1,0 +1,137 @@
+---
+title: "PromptStream React SDK"
+description: "Guide to installing and using the PromptStream React SDK in your application."
+slug: "/sdk/react"
+---
+
+import { PropsTable } from '@mintlify/components';
+
+# PromptStream React SDK
+
+![npm](https://img.shields.io/npm/v/promptstream-sdk) ![license](https://img.shields.io/npm/l/promptstream-sdk)
+
+A first-class React client for PromptStream. Works with Tailwind, Next.js, and any React app. Provides hooks, context, and components to run prompts and track outcomes.
+
+<TOC />
+
+## Installation
+
+```bash
+npm install promptstream-sdk
+# or
+yarn add promptstream-sdk
+```
+
+## Setup
+
+```tsx
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { PromptStreamProvider } from 'promptstream-sdk';
+
+ReactDOM.render(
+  <PromptStreamProvider apiKey="YOUR_API_KEY" userId="USER_ID" experimentId="EXPERIMENT_ID">
+    <App />
+  </PromptStreamProvider>,
+  document.getElementById('root')
+);
+```
+
+## Core Concepts
+
+| Concept                | Description                                   |
+| ---------------------- | --------------------------------------------- |
+| `PromptStreamProvider` | Wrap your app, provides context & client      |
+| `useRunPrompt`         | Hook to execute a prompt and get the response |
+| `useTrackClick`        | Hook to track click events                    |
+| `useTrackFeedback`     | Hook to capture thumbs up/down feedback       |
+| …                      | …                                             |
+
+## Hooks
+
+### `usePromptStreamContext()`
+
+```ts
+const { client, apiKey, userId, experimentId } = usePromptStreamContext();
+```
+
+<PropsTable
+props={[
+{ name: 'apiKey', type: 'string', required: true, description: 'Your PromptStream API key' },
+{ name: 'userId', type: 'string', required: false, description: 'Optional external user ID' },
+{ name: 'experimentId', type: 'string', required: false, description: 'Optional experiment ID' },
+{ name: 'client', type: 'PromptStreamClient', required: true, description: 'SDK client instance' }
+]}
+/>
+
+### `useRunPrompt(promptId, inputs, externalUserId?)`
+
+```ts
+const { run, loading, error } = useRunPrompt('onboarding-assistant', { name: 'Alice' });
+```
+
+<PropsTable
+props={[
+{ name: 'promptId', type: 'string', required: true, description: 'ID of the prompt to run' },
+{ name: 'inputs', type: 'object', required: true, description: 'Key/value inputs for the prompt template' },
+{ name: 'externalUserId', type: 'string', required: false, description: 'User ID for experiment bucketing' },
+{ name: 'run()', type: '() => Promise<RunResponse>', required: true, description: 'Executes the prompt' },
+{ name: 'loading', type: 'boolean', required: true, description: 'True while running' },
+{ name: 'error', type: 'Error', required: false, description: 'Error object if the run failed' }
+]}
+/>
+
+## Components
+
+### `<TrackClick>`
+
+```tsx
+<TrackClick label="signup_button">
+  <button>Sign Up</button>
+</TrackClick>
+```
+
+<PropsTable
+props={[
+{ name: 'label', type: 'string', required: true, description: 'Event label for tracking' },
+{ name: 'source', type: 'string', required: false, description: 'Optional source metadata' }
+]}
+/>
+
+## Complete Example
+
+```tsx
+import React from 'react';
+import { PromptStreamProvider, useRunPrompt, TrackClick, PromptFeedback } from 'promptstream-sdk';
+
+export default function Dashboard() {
+  const { run, loading } = useRunPrompt('onboarding-assistant', { name: 'Alice' });
+  const [output, setOutput] = React.useState('');
+
+  const execute = async () => {
+    const res = await run();
+    setOutput(res.output);
+  };
+
+  return (
+    <PromptStreamProvider apiKey="…" userId="user-123" experimentId="exp-456">
+      <div className="p-4 space-y-4">
+        <button onClick={execute} disabled={loading} className="btn btn-primary">
+          {loading ? 'Running…' : 'Run Prompt'}
+        </button>
+        {output && <div className="prose">{output}</div>}
+        <TrackClick label="ran_prompt">
+          <button className="btn">I clicked this</button>
+        </TrackClick>
+        <PromptFeedback />
+      </div>
+    </PromptStreamProvider>
+  );
+}
+```
+
+## Next Steps
+
+* Explore advanced configuration in `<PromptStreamProvider>`
+* Check out the [Developer Docs](https://promptstream.mintlify.app) for full API reference
+
