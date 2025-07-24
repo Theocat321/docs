@@ -1,0 +1,186 @@
+---
+title: "PromptStream Python SDK"
+description: "Guide to installing and using the PromptStream Python SDK."
+slug: "/sdk/python"
+---
+
+import { PropsTable } from '@mintlify/components';
+
+# PromptStream Python SDK
+
+![PyPI](https://img.shields.io/pypi/v/promptstream-sdk) ![license](https://img.shields.io/pypi/l/promptstream-sdk)
+
+A lightweight Python client for PromptStream. Execute prompts, run A/B experiments and track engagement from any Python environment.
+
+<TOC />
+
+## 1. Introduction
+
+PromptStream's Python SDK lets you run prompts and capture user events from your Python applications. Key concepts:
+
+- **Prompt** – a versioned template you create in the dashboard
+- **Prompt Run** – a single execution of a prompt with inputs
+- **Experiment** – groups runs for A/B testing
+- **Variant** – the specific prompt version assigned to a run
+- **Events** – clicks, conversions, feedback, ratings, or engagement metrics
+
+## 2. Installation
+
+### Requirements
+
+- Python \u2265 3.x
+- `promptstream-sdk` and its dependencies
+
+### Install via pip
+
+```bash
+pip install promptstream-sdk
+```
+
+### Importing
+
+```python
+from promptstream_sdk import PromptStreamClient
+```
+
+## 3. Authentication & Client Initialization
+
+Generate an API key from your PromptStream dashboard. Pass it directly or via the `PROMPTSTREAM_API_KEY` environment variable.
+
+```python
+client = PromptStreamClient(api_key="YOUR_API_KEY")
+```
+
+## 4. Core API
+
+### 4.1 `run_prompt`
+
+```python
+run_prompt(
+    prompt_id: str,
+    inputs: dict,
+    external_user_id: Optional[str] = None
+) -> RunResponse
+```
+
+Parameters:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `prompt_id` | `str` | UUID of your PromptStream prompt |
+| `inputs` | `dict` | Mapping of input names to values |
+| `external_user_id` | `str?` | Optional stable end-user ID |
+
+Returns `RunResponse` with:
+
+- `run_id`
+- `experiment_id`
+- `variant_assigned`
+- `output`
+
+### Errors
+
+Authentication failures, invalid prompt IDs, and network issues raise exceptions.
+
+### 4.2 Event-Tracking Methods
+
+All event methods accept `prompt_run_id`, `experiment_id`, and optional `external_user_id`.
+
+#### 4.2.1 `track_click`
+
+```python
+track_click(
+    prompt_run_id: str,
+    experiment_id: str,
+    label: str,
+    external_user_id: Optional[str] = None,
+    source: Optional[str] = None,
+    metadata: Optional[dict] = None
+)
+```
+
+#### 4.2.2 `track_conversion`
+
+```python
+track_conversion(
+    prompt_run_id: str,
+    experiment_id: str,
+    label: str = "conversion",
+    external_user_id: Optional[str] = None,
+    source: Optional[str] = None,
+    metadata: Optional[dict] = None
+)
+```
+
+#### 4.2.3 `track_feedback`
+
+```python
+track_feedback(
+    prompt_run_id: str,
+    experiment_id: str,
+    thumbs_up: bool,
+    external_user_id: Optional[str] = None,
+    source: Optional[str] = None,
+    metadata: Optional[dict] = None
+)
+```
+
+#### 4.2.4 `track_rating`
+
+```python
+track_rating(
+    prompt_run_id: str,
+    experiment_id: str,
+    rating: float,
+    external_user_id: Optional[str] = None
+)
+```
+
+#### 4.2.5 `track_engagement`
+
+```python
+track_engagement(
+    prompt_run_id: str,
+    experiment_id: str,
+    engagement_score: float,
+    external_user_id: Optional[str] = None
+)
+```
+
+## 5. Response Types & Data Models
+
+`RunResponse` fields:
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `run_id` | `str` | Unique identifier for this run |
+| `experiment_id` | `str` | Experiment the run belongs to |
+| `variant_assigned` | `str` | Version used |
+| `output` | `str` | Prompt output text |
+
+Errors may include `AuthenticationError`, `PromptNotFoundError`, and `RateLimitError`.
+
+## 6. Usage Examples
+
+### Basic Prompt Run
+
+```python
+resp = client.run_prompt("PROMPT_ID", {"text": "Hi"}, external_user_id="user_123")
+print(resp.output)
+```
+
+### Full Dashboard Test Script
+
+Use the provided `promptstream_test_generator.py` script to simulate runs and events for your dashboard.
+
+### Batch Runs & Bulk Tracking
+
+Loop over your data to run prompts and track outcomes in bulk.
+
+## 7. Best Practices
+
+- Use idempotent identifiers for runs when possible
+- Standardize event labels and metadata
+- Handle retries for transient failures
+- Avoid storing PII or send hashes when required for GDPR compliance
+

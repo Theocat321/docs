@@ -16,7 +16,7 @@
           
           {
             "group": "SDKs",
-            "pages": ["sdk/react"]
+            "pages": ["sdk/react", "sdk/python"]
           }
         ]
       },
