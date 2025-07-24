@@ -44,7 +44,11 @@
               "ai-tools/claude-code",
               "ai-tools/windsurf"
             ]
-          }
+          },
+          {
+            "group": "SDKs",
+            "pages": ["sdk/react"]
+          },
         ]
       },
       {
