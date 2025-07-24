@@ -49,6 +49,10 @@
             "group": "SDKs",
             "pages": ["sdk/react"]
           },
+          {
+            "group": "Experimentation",
+            "pages": ["experiments/finish-experiment"]
+          },
         ]
       },
       {
@@ -65,7 +69,8 @@
           "pages": [
               "api-reference/endpoint/health",
               "api-reference/endpoint/run-prompt",
-              "api-reference/endpoint/track-outcome"
+              "api-reference/endpoint/track-outcome",
+              "api-reference/endpoint/complete-experiment"
             ]
           }
         ]

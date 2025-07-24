@@ -93,8 +93,64 @@
                 "$ref": "#/components/schemas/TrackOutcomeRequest"
               }
             }
+      }
+    },
+    "/experiments/{experiment_id}/complete": {
+      "post": {
+        "summary": "Complete Experiment",
+        "operationId": "complete_experiment_experiments__experiment_id__complete_post",
+        "parameters": [
+          {
+            "name": "experiment_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Experiment Id"
+            }
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompleteExperimentRequest"
+              }
+            }
           }
         },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
         "responses": {
           "201": {
             "description": "Successful Response",
@@ -325,6 +381,17 @@
           "value"
         ],
         "title": "TrackOutcomeRequest"
+      },
+      "CompleteExperimentRequest": {
+        "properties": {
+          "winning_variant_id": {
+            "type": "string",
+            "title": "Winning Variant Id"
+          }
+        },
+        "type": "object",
+        "required": ["winning_variant_id"],
+        "title": "CompleteExperimentRequest"
       },
       "ValidationError": {
         "properties": {

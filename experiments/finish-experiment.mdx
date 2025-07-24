@@ -1,0 +1,70 @@
+---
+title: "Finish Experiment Flow"
+description: "Steps to complete an experiment and promote the winning prompt version."
+---
+
+A complete walk-through for closing out a running experiment.
+
+## 1. UI Flow ("Finish Experiment")
+
+1. On `/experiments/[id]`, show a **Finish Experiment** button when the status is `running`.
+2. Clicking the button opens a confirmation modal.
+   - **Title**: "Complete Experiment: Choose Winner"
+   - **Body**: "Select which variant to promote as your new active prompt version. You can review summary metrics for A vs B below."
+   - Allow the user to pick **Variant A** or **Variant B**.
+   - Buttons: **Cancel** or **Complete Experiment**.
+3. When **Complete Experiment** is clicked, send a request to your API endpoint with the winning variant ID.
+4. Provide feedback in the UI:
+   - Show a spinner while completing.
+   - On success, update the page to indicate the experiment is completed and archive the losing variant.
+
+## 2. API Endpoint
+
+```http
+POST /experiments/{experiment_id}/complete
+Content-Type: application/json
+X-API-Key: <org-api-key>
+{
+  "winning_variant_id": "uuid-of-prompt_versions"
+}
+```
+
+The endpoint performs these checks:
+
+1. Ensure the experiment exists and is currently running.
+2. Validate that the `winning_variant_id` is either `variant_a_id` or `variant_b_id`.
+3. In a transaction, mark the experiment as completed and activate the chosen prompt version while archiving the loser.
+4. Optionally, update the prompt to point at the winning version.
+5. Return `200 OK` with the updated experiment.
+
+## 3. Database Changes
+
+Add columns to record the winner and completion time:
+
+```sql
+ALTER TABLE public.experiments
+  ADD COLUMN winning_variant_id UUID REFERENCES public.prompt_versions(id),
+  ADD COLUMN completed_at TIMESTAMP;
+```
+
+Update prompt status workflow and optionally store a `current_version_id` on `prompts`:
+
+```sql
+-- Promote winner and archive loser
+UPDATE prompt_versions
+SET status = 'active'
+WHERE id = :winning_variant_id;
+
+UPDATE prompt_versions
+SET status = 'archived'
+WHERE id IN (:variant_a_id, :variant_b_id)
+  AND id <> :winning_variant_id;
+
+-- Pointer to the newly active version
+ALTER TABLE public.prompts
+  ADD COLUMN current_version_id UUID REFERENCES public.prompt_versions(id);
+```
+
+## 4. Summary
+
+After completion the experiment record stores the winning variant and completion time while the prompt registry automatically points at the new active version.
