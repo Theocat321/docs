@@ -57,12 +57,11 @@
             ]
           },
           {
-            "group": "Endpoint examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+          "group": "Endpoint examples",
+          "pages": [
+              "api-reference/endpoint/health",
+              "api-reference/endpoint/run-prompt",
+              "api-reference/endpoint/track-outcome"
             ]
           }
         ]
