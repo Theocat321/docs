@@ -4,7 +4,7 @@ description: "Guide to installing and using the PromptStream Python SDK."
 slug: "/sdk/python"
 ---
 
-import { PropsTable } from '@mintlify/components';
+import { PropsTable } from "@mintlify/components";
 
 # PromptStream Python SDK
 
@@ -18,18 +18,18 @@ A lightweight Python client for PromptStream. Execute prompts, run A/B experimen
 
 PromptStream's Python SDK lets you run prompts and capture user events from your Python applications. Key concepts:
 
-- **Prompt** – a versioned template you create in the dashboard
-- **Prompt Run** – a single execution of a prompt with inputs
-- **Experiment** – groups runs for A/B testing
-- **Variant** – the specific prompt version assigned to a run
-- **Events** – clicks, conversions, feedback, ratings, or engagement metrics
+-   **Prompt** – a versioned template you create in the dashboard
+-   **Prompt Run** – a single execution of a prompt with inputs
+-   **Experiment** – groups runs for A/B testing
+-   **Variant** – the specific prompt version assigned to a run
+-   **Events** – clicks, conversions, feedback, ratings, or engagement metrics
 
 ## 2. Installation
 
 ### Requirements
 
-- Python \u2265 3.x
-- `promptstream-sdk` and its dependencies
+-   Python \u2265 3.x
+-   `promptstream-sdk` and its dependencies
 
 ### Install via pip
 
@@ -65,18 +65,18 @@ run_prompt(
 
 Parameters:
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| `prompt_id` | `str` | UUID of your PromptStream prompt |
-| `inputs` | `dict` | Mapping of input names to values |
-| `external_user_id` | `str?` | Optional stable end-user ID |
+| Name               | Type   | Description                      |
+| ------------------ | ------ | -------------------------------- |
+| `prompt_id`        | `str`  | UUID of your PromptStream prompt |
+| `inputs`           | `dict` | Mapping of input names to values |
+| `external_user_id` | `str?` | Optional stable end-user ID      |
 
 Returns `RunResponse` with:
 
-- `run_id`
-- `experiment_id`
-- `variant_assigned`
-- `output`
+-   `run_id`
+-   `experiment_id`
+-   `variant_assigned`
+-   `output`
 
 ### Errors
 
@@ -151,12 +151,12 @@ track_engagement(
 
 `RunResponse` fields:
 
-| Field | Type | Description |
-| ----- | ---- | ----------- |
-| `run_id` | `str` | Unique identifier for this run |
-| `experiment_id` | `str` | Experiment the run belongs to |
-| `variant_assigned` | `str` | Version used |
-| `output` | `str` | Prompt output text |
+| Field              | Type  | Description                    |
+| ------------------ | ----- | ------------------------------ |
+| `run_id`           | `str` | Unique identifier for this run |
+| `experiment_id`    | `str` | Experiment the run belongs to  |
+| `variant_assigned` | `str` | Version used                   |
+| `output`           | `str` | Prompt output text             |
 
 Errors may include `AuthenticationError`, `PromptNotFoundError`, and `RateLimitError`.
 
@@ -169,18 +169,13 @@ resp = client.run_prompt("PROMPT_ID", {"text": "Hi"}, external_user_id="user_123
 print(resp.output)
 ```
 
-### Full Dashboard Test Script
-
-Use the provided `promptstream_test_generator.py` script to simulate runs and events for your dashboard.
-
 ### Batch Runs & Bulk Tracking
 
 Loop over your data to run prompts and track outcomes in bulk.
 
 ## 7. Best Practices
 
-- Use idempotent identifiers for runs when possible
-- Standardize event labels and metadata
-- Handle retries for transient failures
-- Avoid storing PII or send hashes when required for GDPR compliance
-
+-   Use idempotent identifiers for runs when possible
+-   Standardize event labels and metadata
+-   Handle retries for transient failures
+-   Avoid storing PII or send hashes when required for GDPR compliance
