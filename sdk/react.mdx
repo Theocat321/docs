@@ -4,7 +4,7 @@ description: "Guide to installing and using the PromptStream React SDK in your a
 slug: "/sdk/react"
 ---
 
-import { PropsTable } from '@mintlify/components';
+import { PropsTable } from "@mintlify/components";
 
 # PromptStream React SDK
 
@@ -25,15 +25,19 @@ yarn add promptstream-sdk
 ## Setup
 
 ```tsx
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { PromptStreamProvider } from 'promptstream-sdk';
+import React from "react";
+import ReactDOM from "react-dom";
+import { PromptStreamProvider } from "promptstream-sdk";
 
 ReactDOM.render(
-  <PromptStreamProvider apiKey="YOUR_API_KEY" userId="USER_ID" experimentId="EXPERIMENT_ID">
-    <App />
-  </PromptStreamProvider>,
-  document.getElementById('root')
+    <PromptStreamProvider
+        apiKey="YOUR_API_KEY"
+        userId="USER_ID"
+        experimentId="EXPERIMENT_ID"
+    >
+        <App />
+    </PromptStreamProvider>,
+    document.getElementById("root")
 );
 ```
 
@@ -56,29 +60,81 @@ const { client, apiKey, userId, experimentId } = usePromptStreamContext();
 ```
 
 <PropsTable
-props={[
-{ name: 'apiKey', type: 'string', required: true, description: 'Your PromptStream API key' },
-{ name: 'userId', type: 'string', required: false, description: 'Optional external user ID' },
-{ name: 'experimentId', type: 'string', required: false, description: 'Optional experiment ID' },
-{ name: 'client', type: 'PromptStreamClient', required: true, description: 'SDK client instance' }
-]}
+    props={[
+        {
+            name: "apiKey",
+            type: "string",
+            required: true,
+            description: "Your PromptStream API key",
+        },
+        {
+            name: "userId",
+            type: "string",
+            required: false,
+            description: "Optional external user ID",
+        },
+        {
+            name: "experimentId",
+            type: "string",
+            required: false,
+            description: "Optional experiment ID",
+        },
+        {
+            name: "client",
+            type: "PromptStreamClient",
+            required: true,
+            description: "SDK client instance",
+        },
+    ]}
 />
 
 ### `useRunPrompt(promptId, inputs, externalUserId?)`
 
 ```ts
-const { run, loading, error } = useRunPrompt('onboarding-assistant', { name: 'Alice' });
+const { run, loading, error } = useRunPrompt("onboarding-assistant", {
+    name: "Alice",
+});
 ```
 
 <PropsTable
-props={[
-{ name: 'promptId', type: 'string', required: true, description: 'ID of the prompt to run' },
-{ name: 'inputs', type: 'object', required: true, description: 'Key/value inputs for the prompt template' },
-{ name: 'externalUserId', type: 'string', required: false, description: 'User ID for experiment bucketing' },
-{ name: 'run()', type: '() => Promise<RunResponse>', required: true, description: 'Executes the prompt' },
-{ name: 'loading', type: 'boolean', required: true, description: 'True while running' },
-{ name: 'error', type: 'Error', required: false, description: 'Error object if the run failed' }
-]}
+    props={[
+        {
+            name: "promptId",
+            type: "string",
+            required: true,
+            description: "ID of the prompt to run",
+        },
+        {
+            name: "inputs",
+            type: "object",
+            required: true,
+            description: "Key/value inputs for the prompt template",
+        },
+        {
+            name: "externalUserId",
+            type: "string",
+            required: false,
+            description: "User ID for experiment bucketing",
+        },
+        {
+            name: "run()",
+            type: "() => Promise<RunResponse>",
+            required: true,
+            description: "Executes the prompt",
+        },
+        {
+            name: "loading",
+            type: "boolean",
+            required: true,
+            description: "True while running",
+        },
+        {
+            name: "error",
+            type: "Error",
+            required: false,
+            description: "Error object if the run failed",
+        },
+    ]}
 />
 
 ## Components
@@ -87,51 +143,244 @@ props={[
 
 ```tsx
 <TrackClick label="signup_button">
-  <button>Sign Up</button>
+    <button>Sign Up</button>
 </TrackClick>
 ```
 
 <PropsTable
-props={[
-{ name: 'label', type: 'string', required: true, description: 'Event label for tracking' },
-{ name: 'source', type: 'string', required: false, description: 'Optional source metadata' }
-]}
+    props={[
+        {
+            name: "label",
+            type: "string",
+            required: true,
+            description: "Event label for tracking",
+        },
+        {
+            name: "source",
+            type: "string",
+            required: false,
+            description: "Optional source metadata",
+        },
+    ]}
 />
 
 ## Complete Example
 
 ```tsx
-import React from 'react';
-import { PromptStreamProvider, useRunPrompt, TrackClick, PromptFeedback } from 'promptstream-sdk';
+// src/App.tsx
+import React, { useState } from "react";
+import {
+    useRunPrompt,
+    useTrackClick,
+    useTrackConversion,
+    useTrackFeedback,
+    useTrackRating,
+    useTrackEngagement,
+    TrackClick,
+    TrackConversion,
+    PromptFeedback,
+} from "promptstream-react-sdk";
 
-export default function Dashboard() {
-  const { run, loading } = useRunPrompt('onboarding-assistant', { name: 'Alice' });
-  const [output, setOutput] = React.useState('');
+export default function App() {
+    const promptId = "cccccccc-cccc-cccc-cccc-cccccccccccc";
 
-  const execute = async () => {
-    const res = await run();
-    setOutput(res.output);
-  };
+    // 1) Dynamic text input for the `text` placeholder
+    const [textInput, setTextInput] = useState("");
+    const { run, loading, error } = useRunPrompt(promptId, {
+        text: textInput,
+    });
 
-  return (
-    <PromptStreamProvider apiKey="…" userId="user-123" experimentId="exp-456">
-      <div className="p-4 space-y-4">
-        <button onClick={execute} disabled={loading} className="btn btn-primary">
-          {loading ? 'Running…' : 'Run Prompt'}
-        </button>
-        {output && <div className="prose">{output}</div>}
-        <TrackClick label="ran_prompt">
-          <button className="btn">I clicked this</button>
-        </TrackClick>
-        <PromptFeedback />
-      </div>
-    </PromptStreamProvider>
-  );
+    const [output, setOutput] = useState<string>("");
+    const [promptRunId, setPromptRunId] = useState<string>();
+
+    const handleRun = async () => {
+        try {
+            const res = await run();
+            setOutput(JSON.stringify(res.output, null, 2));
+            setPromptRunId(res.run_id);
+        } catch {
+            // error shown below
+        }
+    };
+
+    // 2) Initialize trackers with labels or use components (seen below)
+    const trackClick = useTrackClick("buy_now_click");
+    const trackConversion = useTrackConversion("signup_conversion");
+    const trackFeedback = useTrackFeedback("post_prompt_feedback");
+    const trackRating = useTrackRating("star_rating");
+    const trackEngagement = useTrackEngagement("engagement_score");
+
+    return (
+        <div style={{ padding: 32, fontFamily: "sans-serif" }}>
+            <h1>PromptStream + Vite Demo</h1>
+
+            {/* ——— Text input & Send button ——— */}
+            <section style={{ marginBottom: 24 }}>
+                <input
+                    type="text"
+                    value={textInput}
+                    onChange={(e) => setTextInput(e.target.value)}
+                    placeholder="Type text for prompt..."
+                    style={{ marginRight: 8 }}
+                />
+                <button onClick={handleRun} disabled={loading}>
+                    {loading ? "Running…" : "Send"}
+                </button>
+                {error && <div style={{ color: "red" }}>{error.message}</div>}
+            </section>
+
+            {/* ——— Prompt output ——— */}
+            {output && (
+                <pre
+                    style={{
+                        background: "#f0f0f0",
+                        padding: 12,
+                        borderRadius: 4,
+                        maxHeight: 200,
+                        overflow: "auto",
+                    }}
+                >
+                    {output}
+                </pre>
+            )}
+
+            {/* ——— Tracking buttons ——— */}
+            {!!promptRunId && (
+                <>
+                    <section style={{ margin: "24px 0" }}>
+                        <h2>Track Click</h2>
+                        <button
+                            onClick={() =>
+                                trackClick({
+                                    prompt_run_id: promptRunId,
+                                    prompt_id: promptId,
+                                    source: "demo",
+                                })
+                            }
+                        >
+                            Buy Now
+                        </button>
+                    </section>
+
+                    <section style={{ margin: "24px 0" }}>
+                        <h2>Track Conversion</h2>
+                        <button
+                            onClick={() =>
+                                trackConversion({
+                                    prompt_run_id: promptRunId,
+                                    prompt_id: promptId,
+                                    source: "demo",
+                                })
+                            }
+                        >
+                            Signup
+                        </button>
+                    </section>
+
+                    <section style={{ margin: "24px 0" }}>
+                        <h2>Prompt Feedback</h2>
+                        <button
+                            onClick={() =>
+                                trackFeedback(true, {
+                                    prompt_run_id: promptRunId,
+                                    prompt_id: promptId,
+                                    source: "demo",
+                                })
+                            }
+                        >
+                            👍
+                        </button>
+                        <button
+                            onClick={() =>
+                                trackFeedback(false, {
+                                    prompt_run_id: promptRunId,
+                                    prompt_id: promptId,
+                                    source: "demo",
+                                })
+                            }
+                        >
+                            👎
+                        </button>
+                    </section>
+
+                    <section style={{ margin: "24px 0" }}>
+                        <h2>Rating</h2>
+                        {[1, 2, 3, 4, 5].map((n) => (
+                            <button
+                                key={n}
+                                onClick={() =>
+                                    trackRating(n, {
+                                        prompt_run_id: promptRunId,
+                                        prompt_id: promptId,
+                                        source: "survey",
+                                    })
+                                }
+                            >
+                                {n} ★
+                            </button>
+                        ))}
+                    </section>
+
+                    <section style={{ margin: "24px 0" }}>
+                        <h2>Engagement</h2>
+                        <button
+                            onClick={() =>
+                                trackEngagement(42, {
+                                    prompt_run_id: promptRunId,
+                                    prompt_id: promptId,
+                                    source: "interactive",
+                                })
+                            }
+                        >
+                            +42 Engagement
+                        </button>
+                    </section>
+
+                    {/* ——— New “Components” Sub-section ——— */}
+                    <h2>Components</h2>
+
+                    <section style={{ margin: "16px 0" }}>
+                        <h3>TrackClick Component</h3>
+                        <TrackClick
+                            promptRunId={promptRunId}
+                            promptId={promptId}
+                            label="component_click"
+                            source="components"
+                        >
+                            <button>Component Click</button>
+                        </TrackClick>
+                    </section>
+
+                    <section style={{ margin: "16px 0" }}>
+                        <h3>TrackConversion Component</h3>
+                        <TrackConversion
+                            promptRunId={promptRunId}
+                            promptId={promptId}
+                            label="component_conversion"
+                            source="components"
+                        >
+                            <button>Component Convert</button>
+                        </TrackConversion>
+                    </section>
+
+                    <section style={{ margin: "16px 0" }}>
+                        <h3>PromptFeedback Component</h3>
+                        <PromptFeedback
+                            promptRunId={promptRunId}
+                            promptId={promptId}
+                            feedbackLabel="component_feedback"
+                            ratingLabel="component_rating"
+                            source="components"
+                        />
+                    </section>
+                </>
+            )}
+        </div>
+    );
 }
 ```
 
 ## Next Steps
 
-* Explore advanced configuration in `<PromptStreamProvider>`
-* Check out the [Developer Docs](https://promptstream.mintlify.app) for full API reference
-
+-   Explore advanced configuration in `<PromptStreamProvider>`
+-   Check out the [Developer Docs](https://promptstream.mintlify.app) for full API reference
