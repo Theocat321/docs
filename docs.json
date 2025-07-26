@@ -43,6 +43,12 @@
     "global": {
       "anchors": [
         {
+          "anchor": "Landing",
+          "href": "https://promptstream.ai",
+          "icon": "house"
+        },
+
+        {
           "anchor": "Dashboard",
           "href": "https://app.promptstream.ai",
           "icon": "chart-line"
