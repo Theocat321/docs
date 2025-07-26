@@ -121,6 +121,55 @@
           }
         }
       }
+    },
+    "/get_prompt": {
+      "post": {
+        "summary": "Get Prompt",
+        "operationId": "get_prompt_get_prompt_post",
+        "parameters": [
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RunPromptRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetPromptResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -363,6 +412,41 @@
           "type"
         ],
         "title": "ValidationError"
+      },
+      "GetPromptResponse": {
+        "properties": {
+          "prompt_text": {
+            "type": "string",
+            "title": "Prompt Text"
+          },
+          "variant_assigned": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Variant Assigned"
+          },
+          "experiment_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Experiment Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "prompt_text"
+        ],
+        "title": "GetPromptResponse"
       }
     }
   }

@@ -12,11 +12,12 @@
       {
         "tab": "Guides",
         "groups": [
-          
-          
           {
             "group": "SDKs",
-            "pages": ["sdk/react", "sdk/python"]
+            "pages": [
+              "sdk/react",
+              "sdk/python"
+            ]
           }
         ]
       },
@@ -30,10 +31,11 @@
             ]
           },
           {
-          "group": "Endpoint examples",
-          "pages": [
+            "group": "Endpoint examples",
+            "pages": [
               "api-reference/endpoint/health",
               "api-reference/endpoint/run-prompt",
+              "api-reference/endpoint/get-prompt",
               "api-reference/endpoint/track-outcome"
             ]
           }
@@ -47,7 +49,6 @@
           "href": "https://promptstream.ai",
           "icon": "house"
         },
-
         {
           "anchor": "Dashboard",
           "href": "https://app.promptstream.ai",
